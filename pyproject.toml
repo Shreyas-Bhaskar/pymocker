@@ -10,7 +10,19 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "Shreyas Bhaskar", email = "shreyasbhaskar@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
     "fastapi>=0.68.0",
@@ -33,6 +45,12 @@ dev = [
 
 [project.scripts]
 pyapimocker = "pyapimocker.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/shreyasbhaskar/pyapimocker"
+Documentation = "https://github.com/shreyasbhaskar/pyapimocker#readme"
+Repository = "https://github.com/shreyasbhaskar/pyapimocker.git"
+Issues = "https://github.com/shreyasbhaskar/pyapimocker/issues"
 
 [tool.black]
 line-length = 88

@@ -12,6 +12,7 @@ A lightweight, config-driven mock API server designed specifically for Python te
   - Latency simulation
   - Switchable responses based on query, body, or header values
 - **Proxy passthrough** for mixed setups where some routes hit real APIs
+- **Record + Replay mode** for capturing real API responses and replaying them
 - **Integration-friendly** with pytest fixtures for testing
 
 ## Installation
@@ -48,6 +49,38 @@ pyapimocker start mock_config.yaml
 ```
 
 3. Access your mock API at http://localhost:8000/users
+
+## Record + Replay Mode
+
+pyapimocker can record real API responses and replay them later, perfect for:
+- Capturing real API behavior for testing
+- Creating reproducible test environments
+- Working offline with recorded responses
+
+### Usage
+
+Start the server in record mode:
+
+```bash
+pyapimocker start mock_config.yaml --record --proxy-base-url https://api.example.com
+```
+
+- First request to an unmatched endpoint will proxy to the real API and record the response
+- Subsequent requests will serve the recorded response from `recorded_mocks.yaml`
+- Recorded responses persist between server restarts
+
+### Example
+
+```bash
+# Start server in record mode
+pyapimocker start mock_config.yaml --record --proxy-base-url https://jsonplaceholder.typicode.com
+
+# First request - proxies and records
+curl http://localhost:8000/posts/1
+
+# Second request - serves recorded response
+curl http://localhost:8000/posts/1
+```
 
 ## Configuration Format
 
@@ -119,6 +152,8 @@ Options:
 - `--port, -p`: Port to run the mock server on (default: 8000)
 - `--host, -h`: Host to bind the server to (default: 0.0.0.0)
 - `--verbose, -v`: Enable verbose output
+- `--record`: Enable record mode
+- `--proxy-base-url`: Base URL for proxying in record mode
 
 ## Testing Integration
 
@@ -145,7 +180,7 @@ To set up the development environment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/pyapimocker.git
+git clone https://github.com/shreyasbhaskar/pyapimocker.git
 cd pyapimocker
 
 # Install in development mode
@@ -154,6 +189,31 @@ pip install -e ".[dev]"
 # Run tests
 pytest
 ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Port already in use**
+   ```bash
+   # Find process using port
+   lsof -i :8000
+   # Kill process
+   kill -9 <PID>
+   ```
+
+2. **Invalid YAML/JSON config**
+   - Use a YAML validator to check your config
+   - Ensure all required fields are present
+
+3. **Record mode not working**
+   - Check if `--proxy-base-url` is set
+   - Verify network connectivity to target API
+   - Check `recorded_mocks.yaml` permissions
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
