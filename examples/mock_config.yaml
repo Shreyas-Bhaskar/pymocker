@@ -1,0 +1,101 @@
+# Global headers applied to all responses
+global_headers:
+  Access-Control-Allow-Origin: "*"
+  Content-Type: application/json
+
+# Base path prefix for all routes
+base_path: /api/v1
+
+# Route definitions
+routes:
+  # Simple GET endpoint with static response
+  - path: /users
+    method: GET
+    response:
+      status: 200
+      body:
+        users:
+          - id: 1
+            name: "John Doe"
+            email: "john@example.com"
+          - id: 2
+            name: "Jane Smith"
+            email: "jane@example.com"
+      headers:
+        Cache-Control: "max-age=3600"
+      delay: 500  # Add 500ms delay
+
+  # Dynamic response based on path parameter
+  - path: /users/{id}
+    method: GET
+    switch:
+      param: id
+      cases:
+        "1":
+          status: 200
+          body:
+            id: 1
+            name: "John Doe"
+            email: "john@example.com"
+        "2":
+          status: 200
+          body:
+            id: 2
+            name: "Jane Smith"
+            email: "jane@example.com"
+      default:
+        status: 404
+        body:
+          error: "User not found"
+
+  # Response with file reference
+  - path: /products
+    method: GET
+    response:
+      status: 200
+      file: "products.json"
+
+  # Proxy passthrough to real API
+  - path: /weather
+    method: GET
+    proxy: "https://api.weather.example.com/current"
+
+  # Advanced request matching: query param
+  - path: /user-type
+    method: GET
+    switch:
+      param: user_type
+      param_type: query
+      cases:
+        admin:
+          status: 200
+          body:
+            role: "admin"
+        guest:
+          status: 200
+          body:
+            role: "guest"
+      default:
+        status: 404
+        body:
+          error: "User type not found"
+
+  # Advanced request matching: header
+  - path: /header-match
+    method: GET
+    switch:
+      param: X-Role
+      param_type: header
+      cases:
+        admin:
+          status: 200
+          body:
+            message: "Header matched admin"
+        user:
+          status: 200
+          body:
+            message: "Header matched user"
+      default:
+        status: 403
+        body:
+          error: "Forbidden" 
