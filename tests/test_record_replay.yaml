@@ -1,0 +1,17 @@
+# Test configuration for record/replay
+global_headers:
+  Content-Type: application/json
+
+routes:
+  # A static route that will always be served from config
+  - path: /static
+    method: GET
+    response:
+      status: 200
+      body:
+        message: "This is a static response"
+
+  # A route that will be proxied and recorded
+  - path: /dynamic
+    method: GET
+    proxy: "https://httpbin.org/get" 
